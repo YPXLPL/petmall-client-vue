@@ -3,7 +3,7 @@
   $colors: (
     'primary': (
       // 主色
-      'base': rgba(0, 161, 153, 0.9),
+      'base': rgba($color: #7e4c4f, $alpha: 0.9),
     ),
     'success': (
       // 成功色
@@ -15,7 +15,7 @@
     ),
     'danger': (
       // 危险色
-      'base': #e26237,
+      'base': #db2911,
     ),
     'error': (
       // 错误色

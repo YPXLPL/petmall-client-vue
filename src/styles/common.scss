@@ -50,7 +50,7 @@ img {
   max-width: 100%;
   max-height: 100%;
   vertical-align: middle;
-  background: #ebebeb url('@/assets/images/200.png') no-repeat center / contain;
+  background: rgba(0, 0, 0, 0) no-repeat center / contain;
 }
 ul {
   list-style: none;
@@ -66,6 +66,7 @@ ul {
   margin: 0 auto;
   position: relative;
 }
+
 .ellipsis {
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -101,4 +102,25 @@ ul {
 // reset element
 .el-breadcrumb__inner.is-link {
   font-weight: 400 !important;
+}
+
+.title {
+  padding: 0px 0 30px 0;
+  h3 {
+    text-align: center;
+    font-family: 'dingding', sans-serif;
+    font-size: 30px;
+  }
+}
+@font-face {
+  font-family: 'dingding';
+  font-weight: 900;
+  src: url("@/assets/font/dingding/DingTalk-JinBuTi.woff2") format("woff2"),
+  url("@/assets/font/dingding/DingTalk-JinBuTi.woff") format("woff");
+  font-display: swap;
+}
+
+.page-nav {
+  display: flex;
+  justify-content: center;
 }
