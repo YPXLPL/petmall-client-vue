@@ -6,7 +6,7 @@ export const authTokenApi = (loginParams) =>
     Headers: { 'content-type': 'application/x-www-form-urlencoded' }
   })
 
-export const sendCode = (phone) => request.get('/thridparty/open/sendCode', { params: { phone } })
+export const sendCode = (phone) => request.get('/thirdparty/open/sendCode', { params: { phone } })
 
 export const getUserInfoApi = () => request.get('/auth/user/own')
 

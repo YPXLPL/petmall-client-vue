@@ -20,7 +20,7 @@ document.body.scrollTop = 0
   <HomeGoods title="猫猫用品" :catSubType="1"> </HomeGoods>
   <HomeBrand :pageNum="2"></HomeBrand>
   <HomeServiceAdvertising></HomeServiceAdvertising>
-  <HomeBlog></HomeBlog>
+  <!-- <HomeBlog></HomeBlog> -->
 </template>
 
 <style lang="scss" scoped>

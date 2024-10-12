@@ -1,5 +1,6 @@
 <script setup>
 import { useUserStore } from '@/stores/index.js'
+import { message } from '@/utils/resetMessage'
 import { ElMessageBox, ElNotification } from 'element-plus'
 import { useRouter } from 'vue-router'
 const userStore = useUserStore()
@@ -7,7 +8,15 @@ const router = useRouter()
 if (userStore.token) {
   userStore.getUserInfo()
 }
-
+const goToOwnOrderHandler = () => {
+  if (!userStore.user.username) {
+    message.error('请先登录')
+    router.push('/login')
+    return
+  } else {
+    router.push('/member?index=3&navIndex=-1')
+  }
+}
 const logout = () => {
   ElMessageBox.confirm('是否要退出登录?', '温馨提示', {
     confirmButtonText: '确定',
@@ -31,7 +40,7 @@ const logout = () => {
     <div class="top-nav-content">
       <div class="top-nav-left">
         <div>
-          <RouterLink to="/" class="active">Welcome To IPet</RouterLink>
+          <RouterLink to="/" class="active">I宠购物商城</RouterLink>
         </div>
       </div>
       <div class="top-nav-right">
@@ -43,15 +52,18 @@ const logout = () => {
             </RouterLink>
           </li>
           <li v-else>
-            <RouterLink to="/member" class="login active">
-              <span>欢迎：</span>
+            <RouterLink to="/member?index=0" class="login active">
+              <span>欢迎主人：</span>
               <span style="color: #fff">{{
                 userStore.user.nickName ? userStore.user.nickName : userStore.user.username
               }}</span>
             </RouterLink>
           </li>
+          <li>
+            <RouterLink to="" @click.prevent="goToOwnOrderHandler" class="active">我的订单</RouterLink>
+          </li>
           <li v-if="userStore.user.username">
-            <RouterLink to="" @click="logout" class="active">退出登录</RouterLink>
+            <a style="cursor: pointer" @click="logout" class="active">退出登录</a>
           </li>
         </ul>
       </div>
@@ -76,6 +88,7 @@ const logout = () => {
   }
   &-left {
     .active {
+      letter-spacing: 1px;
       color: #fff;
       transition: 0.3s all ease;
     }

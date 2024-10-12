@@ -2,7 +2,7 @@ import axios from 'axios'
 import { message } from '@/utils/resetMessage.js'
 import { useUserStore } from '@/stores'
 import qs from 'qs'
-const baseURL = 'http://localhost:13000'
+const baseURL = 'http://192.168.80.128:80/api/'
 axios.defaults.withCredentials = true
 const request = axios.create({
   baseURL,

@@ -2,13 +2,15 @@
 import logo from '@/assets/img/logo2.png'
 import { ref } from 'vue'
 import { authTokenApi, sendCode } from '@/api/auth'
+import { registerApi } from '@/api/member'
 import { useUserStore } from '@/stores/index.js'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { ElNotification } from 'element-plus'
 import { message } from '@/utils/resetMessage'
 const userStore = useUserStore()
 const router = useRouter()
 const loginFormRef = ref()
+const registerFormRef = ref()
 const loginForm = ref({
   client_id: 'petmall-client-auth',
   client_secret: 'petmall-web-auth-server',
@@ -19,9 +21,9 @@ const loginForm = ref({
   code: ''
 })
 const registerForm = ref({
-  username: '',
-  password: '',
-  rePassword: ''
+  phone: '',
+  registerPassword: '',
+  reRegisterPassword: ''
 })
 const rules = ref({
   username: [{ required: true, message: '请输入用户名/手机号', trigger: 'blur' }],
@@ -35,6 +37,27 @@ const rules = ref({
       validator: (rule, value, callback) => {
         if (!value) {
           callback(new Error('请输入验证码'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur'
+    }
+  ],
+  registerPassword: [
+    { required: true, message: '密码不能为空', trigger: 'blur' },
+    {
+      pattern: /^(?![a-zA-Z]+$)(?!\d+$)(?![^\da-zA-Z\s]+$).{5,}$/,
+      message: '密码必须由字母、数字、特殊字符，任意2种组成，5位以上',
+      trigger: 'change'
+    }
+  ],
+  reRegisterPassword: [
+    { required: true, message: '确认密码不能为空', trigger: 'blur' },
+    {
+      validator: (rule, value, callback) => {
+        if (value !== registerForm.value.registerPassword) {
+          callback(new Error('与密码不一致'))
         } else {
           callback()
         }
@@ -64,14 +87,35 @@ const changeLoginWay = () => {
 
 const sendCodeHandler = async () => {
   let flag = true
-  loginFormRef.value.validateField('phone', async (valid) => {
-    if (!valid) {
-      flag = false
-    } else {
-      const res = await sendCode(loginForm.value.phone)
-      message.success(res.msg)
-    }
-  })
+  if (isLogin.value) {
+    loginFormRef.value.validateField('phone', async (valid) => {
+      if (!valid) {
+        flag = false
+      } else {
+        sendCode(loginForm.value.phone)
+          .then((res) => {
+            message.success(res.msg)
+          })
+          .catch(() => {
+            flag = false
+          })
+      }
+    })
+  } else {
+    registerFormRef.value.validateField('phone', async (valid) => {
+      if (!valid) {
+        flag = false
+      } else {
+        sendCode(registerForm.value.phone)
+          .then((res) => {
+            message.success(res.msg)
+          })
+          .catch(() => {
+            flag = false
+          })
+      }
+    })
+  }
 
   setTimeout(() => {
     if (flag) {
@@ -106,9 +150,33 @@ const login = () => {
         title: '登录成功',
         type: 'success'
       })
-      router.push('/')
+      router.replace('/')
     }
   })
+}
+const register = () => {
+  registerFormRef.value.validate(async (valid) => {
+    if (valid) {
+      const res = await registerApi(registerForm.value)
+      message.success(res.msg)
+      isLogin.value = true
+    }
+  })
+}
+const baseURL = 'http://petmall-project.natapp1.cc'
+const backURL = 'http://localhost:8991/login'
+const redirectUrl = encodeURIComponent(backURL)
+const alipayLoginUrl = `${baseURL}/thirdparty/open/oauth2/alipay/login?redirect=${redirectUrl}`
+const route = useRoute()
+if (route.query.auth) {
+  const auth = JSON.parse(route.query.auth)
+  userStore.setToken(auth.token_type + ' ' + auth.access_token)
+  userStore.setRefreshToken(auth.refresh_token)
+  ElNotification({
+    title: '登录成功',
+    type: 'success'
+  })
+  router.replace('/')
 }
 </script>
 <template>
@@ -172,32 +240,34 @@ const login = () => {
           <div v-else class="form-content" style="margin-top: 5px">
             <el-form
               ref="registerFormRef"
-              style="width: 400px; margin: 0 auto"
+              style="width: 400px; margin: 0 auto; padding-top: 20px"
               :model="registerForm"
               :rules="rules"
               size="large"
               autocomplete="off"
             >
-              <el-form-item class="form-item" prop="registerUname">
-                <el-input v-model="registerForm.username" placeholder="用户名"></el-input>
+              <el-form-item class="form-item" prop="phone">
+                <el-input v-model="registerForm.phone" placeholder="手机号" clearable></el-input>
               </el-form-item>
-              <el-form-item class="form-item" prop="registerPwd">
-                <el-input type="password" show-password placeholder="密码" v-model="registerForm.password"></el-input>
-              </el-form-item>
-              <el-form-item class="form-item" prop="registerRePwd">
+              <el-form-item class="form-item" prop="registerPassword">
                 <el-input
                   type="password"
                   show-password
-                  placeholder="确认密码"
-                  v-model="registerForm.rePassword"
+                  placeholder="请输入密码"
+                  v-model="registerForm.registerPassword"
                 ></el-input>
               </el-form-item>
-              <el-form-item class="form-item" prop="phone">
-                <el-input v-model="loginForm.phone" placeholder="手机号" clearable></el-input>
+              <el-form-item class="form-item" prop="reRegisterPassword">
+                <el-input
+                  type="password"
+                  show-password
+                  placeholder="请输入确认密码"
+                  v-model="registerForm.reRegisterPassword"
+                ></el-input>
               </el-form-item>
               <el-form-item class="form-item" prop="code">
                 <div class="send-code">
-                  <el-input class="send-code-input" v-model="loginForm.code" placeholder="验证码"> </el-input>
+                  <el-input class="send-code-input" v-model="registerForm.code" placeholder="验证码"> </el-input>
                   <button :disabled="sendSmsFlag" class="send-code-btn" @click.prevent="sendCodeHandler">
                     {{ smsTime > 0 ? `${smsTime}s后重新获取` : '发送验证码' }}
                   </button>
@@ -209,14 +279,10 @@ const login = () => {
             </el-form>
           </div>
           <div v-if="isLogin" class="other-login">
-            <div class="alipay">
+            <a class="alipay" :href="alipayLoginUrl">
               <i class="iconfont icon-zhifubao"></i>
               <span>支付宝</span>
-            </div>
-            <div class="weixin">
-              <i class="iconfont icon-weixin"></i>
-              <span>微信</span>
-            </div>
+            </a>
           </div>
         </div>
       </div>
@@ -421,7 +487,7 @@ const login = () => {
 
     .other-login {
       display: flex;
-      width: 450px;
+      width: 420px;
       margin: 0 auto;
 
       .alipay {
@@ -433,30 +499,6 @@ const login = () => {
           margin-right: 5px;
           color: rgb(6, 171, 241);
           font-size: 25px;
-        }
-
-        span {
-          transition: 0.3s all ease;
-          color: #444;
-        }
-
-        &:hover {
-          span {
-            color: $primaryColor;
-          }
-        }
-      }
-
-      .weixin {
-        cursor: pointer;
-        margin-left: 20px;
-        display: flex;
-        align-items: center;
-
-        .iconfont {
-          margin-right: 5px;
-          font-size: 25px;
-          color: rgb(80, 182, 116);
         }
 
         span {

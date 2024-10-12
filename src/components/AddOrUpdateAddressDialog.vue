@@ -4,6 +4,8 @@ import ProvinceCascader from '@/views/common/ProvinceCascader.vue'
 import { saveAddressApi, updateAddressApi, getAddressByIdApi } from '@/api/member'
 import { ElMessageBox } from 'element-plus'
 import { message } from '@/utils/resetMessage'
+import { useUserStore } from '@/stores'
+const userStore = useUserStore()
 const visible = ref(false)
 const formData = ref({
   id: '',
@@ -13,7 +15,8 @@ const formData = ref({
   city: '',
   region: '',
   detailAddress: '',
-  defaultStatus: false
+  defaultStatus: false,
+  memberId: ''
 })
 const rules = ref({
   name: [
@@ -63,7 +66,8 @@ const resetForm = () => {
     city: '',
     region: '',
     detailAddress: '',
-    defaultStatus: 0
+    defaultStatus: 0,
+    memberId: ''
   }
 }
 const provinceCascaderRef = ref()
@@ -90,6 +94,7 @@ const changeCascaderHandler = (val) => {
   }
 }
 const submit = () => {
+  formData.value.memberId = userStore.user.id
   formRef.value.validate((valid) => {
     if (valid) {
       if (formData.value.id) {

@@ -155,6 +155,10 @@ watch(
 
 const currentGoodsDescNavIndex = ref(0)
 const changeDescNavIndexHandler = (index) => {
+  if (index === 2) {
+    message.warning('功能待开发')
+    return
+  }
   currentGoodsDescNavIndex.value = index
 }
 
@@ -178,13 +182,8 @@ const notifyHandler = () => {
     message.error('请先登录')
     router.push('/login')
     return
-  }
-}
-const addToFavorHandler = () => {
-  if (!userStore.user.username) {
-    message.error('请先登录')
-    router.push('/login')
-    return
+  } else {
+    message.warning('功能待开发')
   }
 }
 </script>
@@ -327,9 +326,6 @@ const addToFavorHandler = () => {
             <div class="add-to">
               <button class="add-to-cart" v-if="stock.hasStock" @click="addCartHandler">加入购物车</button>
               <button class="add-to-cart" v-else @click="notifyHandler">通知添货</button>
-              <button class="add-to-collection" title="收藏" @click.prevent="addToFavorHandler">
-                <i class="iconfont icon-aixin1"></i>
-              </button>
             </div>
           </div>
         </el-col>

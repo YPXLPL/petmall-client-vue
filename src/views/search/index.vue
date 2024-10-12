@@ -4,6 +4,7 @@ import { ref, watch } from 'vue'
 import { searchProductApi } from '@/api/search'
 import { useRoute, useRouter } from 'vue-router'
 import qs from 'qs'
+import { message } from '@/utils/resetMessage'
 document.body.scrollTop = 0
 const isMultiBrand = ref(false)
 const checkBrandList = ref([])
@@ -27,12 +28,15 @@ const searchParam = ref({
   attrs: [],
   pageNum: 1
 })
+const priceRange = ref({
+  price1: '',
+  price2: ''
+})
 const params = ref('')
 const total = ref(0)
 const isMultiAttrList = ref([])
 const buildParams = () => {
   params.value = qs.stringify(searchParam.value, { arrayFormat: 'repeat' })
-  console.log(params.value)
 }
 watch(
   () => route.fullPath,
@@ -48,7 +52,6 @@ const sortToPrice = ref(0)
 const showHasStock = ref(false)
 const searchProduct = async () => {
   loading.value = true
-  console.log(route.query)
   searchParam.value.keyWord = route.query.keyWord
   searchParam.value.brandId = route.query.brandId || []
   searchParam.value.category2Id = route.query.category2Id
@@ -219,7 +222,25 @@ const sortSaleCountHandler = () => {
   buildParams()
   router.replace(`/search?${params.value}`)
 }
-
+const searchPriceRangeHandler = () => {
+  console.log(priceRange.value.price1, priceRange.value.price2)
+  if (priceRange.value.price1 === '' && priceRange.value.price2 === '') {
+    searchParam.value.price = ''
+    buildParams()
+    router.replace(`/search?${params.value}`)
+    return
+  }
+  if (
+    (priceRange.value.price1 !== '' && !Number.isInteger(+priceRange.value.price1)) ||
+    (priceRange.value.price2 !== '' && !Number.isInteger(+priceRange.value.price2))
+  ) {
+    message.warning('请填写正确的价格，如100')
+    return
+  }
+  searchParam.value.price = priceRange.value.price1 + '_' + priceRange.value.price2
+  buildParams()
+  router.replace(`/search?${params.value}`)
+}
 const sortPriceHandler = () => {
   isSortPrice.value = true
   isSortSale.value = false
@@ -248,7 +269,6 @@ const currentPageNumChangeHandler = (num) => {
 }
 
 const closeNavHandler = (nav) => {
-  console.log(nav)
   const lastParams = params.value.replace(nav.link, '')
   i++
   router.replace(`/search?${lastParams}&attr_count=${i}`)
@@ -369,6 +389,13 @@ const triggerHasStock = () => {
             <i class="iconfont icon-check"></i>
           </div>
           <div class="content">仅看有货</div>
+        </div>
+        <div class="price-range">
+          <div class="text">价格区间</div>
+          <el-input v-model="priceRange.price1"></el-input>
+          <span>~</span>
+          <el-input v-model="priceRange.price2"></el-input>
+          <button class="priceBtn" @click.prevent="searchPriceRangeHandler">确定</button>
         </div>
       </div>
       <div class="goods-container">
@@ -709,7 +736,45 @@ const triggerHasStock = () => {
     }
   }
 }
-
+.price-range {
+  width: 450px;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  justify-content: center;
+  span {
+    color: #333;
+    font-size: 16px;
+    margin: 0 5px;
+  }
+  .text {
+    width: 80px;
+    color: #333;
+    margin-left: 5px;
+    font-family: 'dingding';
+    font-size: 16px;
+  }
+  .el-input {
+    width: 150px !important;
+  }
+  .priceBtn {
+    font-size: 16px;
+    letter-spacing: 2px;
+    font-family: 'dingding', sans-serif;
+    margin-left: 5px;
+    background-color: $primaryColor;
+    color: #fff;
+    border: 0;
+    width: 100px;
+    height: 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s all ease;
+    &:hover {
+      background-color: #333;
+    }
+  }
+}
 .goods-empty {
   font-size: 25px;
   padding: 30px 0;

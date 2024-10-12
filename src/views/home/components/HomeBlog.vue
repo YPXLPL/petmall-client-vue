@@ -5,7 +5,7 @@ import blog1Img from '@/assets/blog-1.jpg'
 <template>
   <div class="our-blog">
     <div class="title">
-      <h3>来自我们的博客</h3>
+      <h3>热门博客</h3>
     </div>
     <div class="container">
       <ul class="our-blog-items">
@@ -17,7 +17,7 @@ import blog1Img from '@/assets/blog-1.jpg'
           </div>
           <div class="content">
             <div class="blog-author-date">
-              <span>By: Admin - Sep 14, 2018</span>
+              <span>来自: Admin - 日期 14, 2018</span>
             </div>
             <div class="blog-title ellipsis-2">
               <h4>

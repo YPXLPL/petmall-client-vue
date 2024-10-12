@@ -4,7 +4,8 @@ import { confirmOrderApi, submitOrderApi } from '@/api/order'
 import SelectAddress from '@/views/checkout/components/SelectAddress.vue'
 import { message } from '@/utils/resetMessage'
 import { useRouter } from 'vue-router'
-document.body.scrollTop = 0
+import { useCartStore } from '@/stores'
+const cartStore = useCartStore()
 const loading = ref(false)
 const router = useRouter()
 const curAddress = ref({})
@@ -17,7 +18,6 @@ const confirmOrder = async () => {
   orderItems.value = order.value.orderItems
   curAddress.value = order.value.curAddress
   loading.value = false
-  console.log(order.value)
 }
 confirmOrder()
 const selectAddressRef = ref()
@@ -36,14 +36,18 @@ const submitOrderData = ref({
   payPrice: ''
 })
 const createOrder = async () => {
+  if (curAddress.value === undefined) {
+    message.warning('请添加收货地址')
+    return
+  }
   submitOrderData.value.orderToken = order.value.orderToken
   submitOrderData.value.payPrice = order.value.payPrice
   submitOrderData.value.addressId = curAddress.value.id
   submitOrderData.value.payType = 1
   const res = await submitOrderApi(submitOrderData.value)
   message.success(res.msg)
-  console.log(res.data)
-  router.push('/pay')
+  cartStore.getCartList()
+  router.replace(`/pay?orderSn=${res.data.order.orderSn}`)
 }
 </script>
 <template>
@@ -122,9 +126,6 @@ const createOrder = async () => {
             </el-table-column>
           </el-table>
         </div>
-        <!-- 优惠券 -->
-        <h3 class="box-title">优惠券</h3>
-        <div class="box-body"></div>
         <!-- 备注信息 -->
         <h3 class="box-title">订单备注</h3>
         <div class="box-body">

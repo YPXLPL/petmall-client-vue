@@ -51,7 +51,8 @@ const goToCart = () => {
                     {{ item.title }}
                   </RouterLink>
                 </div>
-                <div class="content-total">数量：{{ item.count }}</div>
+                <div class="content-total" v-if="item.stock > 0">数量：{{ item.count }}</div>
+                <div class="content-total" v-else>商品无货</div>
                 <div class="content-price">&yen;{{ parseFloat(item.price).toFixed(2) }}</div>
               </div>
               <div class="delete" @click="deleteCartItemBySkuId(item.skuId)">
@@ -95,21 +96,24 @@ const goToCart = () => {
   transition: all 0.3s 0.2s;
 
   .empty {
+    font-family: 'dingding', sans-serif;
     display: flex;
     flex-direction: column;
+
     .content {
       display: flex;
       align-items: center;
       justify-content: center;
     }
+
     &-icon {
       color: $primaryColor;
-      font-size: 30px;
+      font-size: 32px;
     }
 
     & span {
       margin-left: 10px;
-      font-size: 16px;
+      font-size: 18px;
     }
   }
 
@@ -143,6 +147,7 @@ const goToCart = () => {
           text-overflow: ellipsis;
           white-space: nowrap;
           cursor: pointer;
+
           a {
             transition: 0.3s all linear;
             font-size: 14px;
@@ -185,18 +190,21 @@ const goToCart = () => {
     }
   }
 }
+
 .btns {
   display: flex;
   flex-direction: column;
   margin-top: 30px;
 
   .btn-item {
+    font-family: 'dingding', sans-serif;
+    letter-spacing: 2px;
     background-color: transparent;
     border: 2px solid #eeeeee;
     border-radius: 50px;
     color: #000101;
     display: block;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1;
     padding: 10px 20px 10px;
     text-align: center;

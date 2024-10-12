@@ -19,7 +19,7 @@ getHomeBrandList()
     <div class="brands-container container">
       <ul class="brand-items">
         <li class="brand-item" v-for="item in homeBrandList" :key="item.brandId">
-          <RouterLink to="">
+          <RouterLink :to="`/brand-goods/${item.brandId}`">
             <el-image :src="item.logo" fit="fill"></el-image>
           </RouterLink>
         </li>

@@ -6,3 +6,4 @@ export const deleteCartItemBySkuIdApi = (skuId) => request.delete(`cart/deleteIt
 export const updateItemCountApi = (skuId, num) => request.put(`/cart/item/count/${skuId}/${num}`)
 export const updateItemCheckApi = (skuId, checked) => request.put(`/cart/item/check/${skuId}/${checked}`)
 export const updateAllItemCheckApi = (checked) => request.put(`/cart/all/item/check/${checked}`)
+export const cartBackCartItemsApi = (cartBackTo) => request.post('/cart/back/cartItems', cartBackTo)

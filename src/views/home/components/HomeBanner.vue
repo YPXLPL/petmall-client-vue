@@ -81,7 +81,13 @@ const changeBannerHandler = (index) => {
         <el-col :span="12" class="left" v-if="active">
           <h3 class="title title-active">{{ currentBanner.title }}</h3>
           <h1 class="subTitle subTitle-active">{{ currentBanner.subTitle }}</h1>
-          <div class="btn btn-active">
+          <div class="btn btn-active" v-if="currentBanner.type === 0">
+            <RouterLink :to="`/brand-goods/${currentBanner.typeId}`">前&nbsp;&nbsp;往</RouterLink>
+          </div>
+          <div class="btn btn-active" v-if="currentBanner.type === 1">
+            <RouterLink to="">前&nbsp;&nbsp;往</RouterLink>
+          </div>
+          <div class="btn btn-active" v-if="currentBanner.type === 2">
             <RouterLink to="">前&nbsp;&nbsp;往</RouterLink>
           </div>
         </el-col>

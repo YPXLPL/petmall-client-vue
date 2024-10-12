@@ -122,6 +122,7 @@ const footerTitleList = ref([
 <style lang="scss" scoped>
 .footer {
   &-container {
+    border-top: 1px solid rgba(202, 202, 202, 0.7);
     width: 100%;
     margin: 0 auto;
   }
@@ -192,12 +193,16 @@ const footerTitleList = ref([
     display: flex;
     align-items: center;
     .qrcode {
-      height: 140px;
+      height: 155px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
+
+      img {
+        width: 100px;
+      }
     }
   }
 

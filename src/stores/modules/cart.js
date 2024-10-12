@@ -4,6 +4,7 @@ import { getOwnCartListApi, getTotalPriceApi } from '@/api/cart'
 export const useCartStore = defineStore('cart-list', () => {
   const cartNum = ref(0)
   const totalCount = ref(0)
+  const curCount = ref(0)
   const totalPrice = ref(0)
   const cartList = ref([])
   const getCartList = async () => {
@@ -16,6 +17,9 @@ export const useCartStore = defineStore('cart-list', () => {
         .reduce((prev, item) => {
           return prev + item.count
         }, 0)
+      curCount.value = cartList.value.reduce((prev, item) => {
+        return prev + item.count
+      }, 0)
     } else {
       cartList.value = []
       cartNum.value = 0
@@ -30,6 +34,7 @@ export const useCartStore = defineStore('cart-list', () => {
   return {
     cartNum,
     getCartList,
+    curCount,
     cartList,
     totalCount,
     totalPrice,

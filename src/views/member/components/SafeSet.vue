@@ -156,7 +156,12 @@ const submit = () => {
     <div v-if="isEdit && editId === 2">
       <el-form ref="formrRef" :model="passwordForm" :rules="rules" label-width="80">
         <el-form-item class="form-item" prop="newPassword" label="新密码">
-          <el-input v-model="passwordForm.newPassword" type="password" show-password placeholder="请输入新密码"></el-input>
+          <el-input
+            v-model="passwordForm.newPassword"
+            type="password"
+            show-password
+            placeholder="请输入新密码"
+          ></el-input>
         </el-form-item>
         <el-form-item class="form-item" prop="reNewPassword" label="确认密码">
           <el-input

@@ -18,13 +18,15 @@ const addOrUpdateAddress = (id) => {
   addOrUpdateAddressDialogRef.value.init(id)
 }
 const addressList = ref([])
+const loading = ref(false)
 const getAddressList = async () => {
+  loading.value = true
   const res = await getAddressListApi()
   addressList.value = res.data
+  loading.value = false
 }
 getAddressList()
 const deleteAddressById = (id) => {
-  console.log(id, userStore.user.id)
   ElMessageBox.confirm('你确定要删除这个收获地址吗？', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -89,37 +91,75 @@ const changeSelectAddressRadioButton = async (val) => {
       </div>
     </div>
     <el-table
+      v-loading="loading"
       class="address-table"
       :data="addressList"
       @selection-change="selectionChangeHandler"
       :height="addressList.length > 8 ? '540' : 'auto'"
     >
-      <el-table-column type="selection" width="50" header-align="center" align="center"></el-table-column>
-      <el-table-column type="index" width="100" label="序号" header-align="center" align="center"></el-table-column>
+      <template #empty>
+        <el-empty description="未添加任何地址"></el-empty>
+      </template>
+      <el-table-column
+        type="selection"
+        width="50"
+        header-align="center"
+        align="center"
+        :resizable="false"
+      ></el-table-column>
+      <el-table-column
+        type="index"
+        width="100"
+        label="序号"
+        header-align="center"
+        align="center"
+        :resizable="false"
+      ></el-table-column>
       <el-table-column
         label="收货人姓名"
         prop="name"
         width="150"
         header-align="center"
         align="center"
+        :resizable="false"
       ></el-table-column>
-      <el-table-column label="手机号" prop="phone" width="160" header-align="center" align="center"></el-table-column>
-      <el-table-column label="详细地址" prop="detailAddress" header-align="center" align="center"></el-table-column>
-      <el-table-column label="默认地址" width="140" prop="defaultStatus" header-align="center" align="center">
+      <el-table-column
+        label="手机号"
+        :resizable="false"
+        prop="phone"
+        width="160"
+        header-align="center"
+        align="center"
+      ></el-table-column>
+      <el-table-column
+        label="详细地址"
+        :resizable="false"
+        prop="detailAddress"
+        header-align="center"
+        align="center"
+      ></el-table-column>
+      <el-table-column
+        label="默认地址"
+        :resizable="false"
+        width="140"
+        prop="defaultStatus"
+        header-align="center"
+        align="center"
+      >
         <template #default="scope">
           <el-radio-group v-model="scope.row.defaultStatus" @change="changeRadioButton(scope.row)">
             <el-radio :label="true" size="large">默认</el-radio>
           </el-radio-group>
         </template>
       </el-table-column>
-      <el-table-column label="收货地址" width="140" header-align="center" align="center">
+      <el-table-column label="收货地址" :resizable="false" width="140" header-align="center" align="center">
         <template #default="scope">
           <el-radio-group v-model="scope.row.curAddress" @change="changeSelectAddressRadioButton(scope.row)">
             <el-radio :label="true" size="large" border>选择地址</el-radio>
           </el-radio-group>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="170" header-align="center" align="center">
+      <el-table-column label="操作" :resizable="false" width="170" header-align="center" align="center">
         <template #default="scope">
           <el-button type="info" :icon="Edit" circle @click="addOrUpdateAddress(scope.row.id)" />
           <el-button type="danger" :icon="Delete" circle @click="deleteAddressById(scope.row.id)" />

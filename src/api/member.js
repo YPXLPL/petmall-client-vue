@@ -23,3 +23,5 @@ export const updateDefaultStatusByIdApi = (id, memberId) =>
 
 export const updateCurAddressByIdApi = (id, memberId) =>
   request.put(`/member/receive-address/update/curAddress/${id}/${memberId}`)
+
+export const registerApi = (registerData) => request.post('/member/open/register', registerData)

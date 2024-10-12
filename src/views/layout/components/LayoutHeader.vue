@@ -18,6 +18,10 @@ const cartStore = useCartStore()
 setTimeout(() => {
   if (userStore.token) {
     cartStore.getCartList()
+  }
+}, 100)
+setTimeout(() => {
+  if (userStore.token) {
     cartNum.value = cartStore.cartNum
   }
 }, 300)
@@ -25,9 +29,11 @@ const updateCartListHandler = () => {
   cartStore.getCartList()
 }
 watch(
-  () => cartStore.totalCount,
+  () => cartStore.curCount,
   () => {
-    cartNum.value = cartStore.cartNum
+    if (userStore.token) {
+      cartNum.value = cartStore.cartNum
+    }
   }
 )
 watch(
@@ -36,7 +42,6 @@ watch(
     showCartListFlag.value = false
   }
 )
-watch(() => route)
 const { y } = useScroll(window)
 const showCartListFlag = ref(false)
 const showCartListHandler = () => {
@@ -58,6 +63,26 @@ const goToOwnInfoHandler = () => {
     return
   } else {
     router.push('/member?index=0')
+  }
+}
+
+const goToOwnCartHandler = () => {
+  if (!userStore.user.username) {
+    message.error('请先登录')
+    router.push('/login')
+    return
+  } else {
+    router.push('/cart')
+  }
+}
+
+const goToOwnOrderHandler = () => {
+  if (!userStore.user.username) {
+    message.error('请先登录')
+    router.push('/login')
+    return
+  } else {
+    router.push('/member?index=3&navIndex=-1')
   }
 }
 const goToCartHandler = () => {
@@ -140,9 +165,15 @@ const searchHandler = () => {
                   <el-image :src="menuImg2" class="img"></el-image>
                 </ul>
               </li>
-              <li class="item"><RouterLink to="" class="level1-active">优惠券</RouterLink></li>
-              <li class="item"><RouterLink to="" class="level1-active">品牌馆</RouterLink></li>
-              <li class="item"><RouterLink to="" class="level1-active">博&nbsp;客</RouterLink></li>
+              <li class="item"><RouterLink to="/brand" class="level1-active">品牌馆</RouterLink></li>
+              <li class="item">
+                <RouterLink to="" @click.prevent="goToOwnCartHandler" class="level1-active">购物车</RouterLink>
+              </li>
+              <li class="item">
+                <RouterLink to="" @click.prevent="goToOwnOrderHandler" class="level1-active">我的订单</RouterLink>
+              </li>
+              <!-- <li class="item"><RouterLink to="" class="level1-active" @click="standby">优惠券</RouterLink></li>
+              <li class="item"><RouterLink to="" class="level1-active" @click="standby">博&nbsp;客</RouterLink></li> -->
             </ul>
           </div>
         </div>

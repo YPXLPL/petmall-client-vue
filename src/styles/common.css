@@ -121,6 +121,12 @@ ul {
   font-size: 30px;
 }
 
+.title h2 {
+  text-align: center;
+  font-family: 'dingding', sans-serif;
+  font-size: 40px;
+}
+
 @font-face {
   font-family: 'dingding';
   font-weight: 900;

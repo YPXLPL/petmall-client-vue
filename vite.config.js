@@ -29,6 +29,21 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
+  server: {
+    host: '0.0.0.0',
+    port: 8991,
+    // 是否开启 https
+    https: false
+  },
+  // 设置反向代理，跨域
+  // proxy: {
+  //   '/api': {
+  //     // 后台地址
+  //     target: 'http://192.168.2.34:13020/',
+  //     changeOrigin: true,
+  //     rewrite: (path) => path.replace(/^\/api/, '')
+  //   }
+  // },
   css: {
     preprocessorOptions: {
       scss: {

@@ -17,11 +17,23 @@ const userFormData = ref({
   gender: 1,
   birthday: ''
 })
+const loading = ref(false)
 const getMemberInfo = async () => {
+  loading.value = true
   const res = await getMemberInfoApi()
   userFormData.value = res.data
+  if (res.data === undefined) {
+    userFormData.value = {
+      nickName: '',
+      city: '',
+      introduce: '',
+      gender: 1,
+      birthday: ''
+    }
+  }
   userFormData.value.nickName = userInfo.nickName
   avatar.value = userInfo.avatar
+  loading.value = false
 }
 getMemberInfo()
 const updateAvatarUrl = async (newUrl) => {
@@ -60,13 +72,13 @@ const submitUserInfo = () => {
 }
 </script>
 <template>
-  <div class="user-info">
+  <div class="user-info" v-loading="loading">
     <div class="avatar">
       <AvatarUpload :url="avatar" @input="updateAvatarUrl"></AvatarUpload>
     </div>
     <div class="favor">
-      <div class="follow"><span>关注</span>：{{ userFormData.follow ? userFormData.follow : 0 }}</div>
-      <div class="fans"><span>粉丝</span>：{{ userFormData.fans ? userFormData.fans : 0 }}</div>
+      <div class="follow"><span>关注</span>：{{ userFormData?.follow ? userFormData?.follow : 0 }}</div>
+      <div class="fans"><span>粉丝</span>：{{ userFormData?.fans ? userFormData?.fans : 0 }}</div>
     </div>
     <div class="user-info-box">
       <div class="info-title">用户名：</div>
@@ -74,7 +86,7 @@ const submitUserInfo = () => {
     </div>
     <div class="user-info-box">
       <div class="info-title">昵称：</div>
-      <div class="info-content" v-if="!isEdit">{{ userFormData.nickName ? userFormData.nickName : '未填写' }}</div>
+      <div class="info-content" v-if="!isEdit">{{ userFormData?.nickName ? userFormData?.nickName : '未填写' }}</div>
       <div class="info-content edit" v-if="isEdit">
         <el-input v-model="userFormData.nickName"></el-input>
       </div>
@@ -82,7 +94,7 @@ const submitUserInfo = () => {
     <div class="user-info-box">
       <div class="info-title">性别：</div>
       <div class="info-content" v-if="!isEdit">
-        {{ userFormData.gender ? (userFormData.gender === 2 ? '女' : '男') : '未填写' }}
+        {{ userFormData?.gender ? (userFormData?.gender === 2 ? '女' : '男') : '未填写' }}
       </div>
       <div class="info-content edit" v-if="isEdit">
         <el-radio-group v-model="userFormData.gender">
@@ -93,14 +105,14 @@ const submitUserInfo = () => {
     </div>
     <div class="user-info-box">
       <div class="info-title">生日：</div>
-      <div class="info-content" v-if="!isEdit">{{ userFormData.birthday ? userFormData.birthday : '未填写' }}</div>
+      <div class="info-content" v-if="!isEdit">{{ userFormData?.birthday ? userFormData?.birthday : '未填写' }}</div>
       <div class="info-content edit" v-if="isEdit">
         <el-date-picker v-model="userFormData.birthday" type="date" placeholder="选择生日" />
       </div>
     </div>
     <div class="user-info-box">
       <div class="info-title">所在城市：</div>
-      <div class="info-content" v-if="!isEdit">{{ userFormData.city ? userFormData.city : '未填写' }}</div>
+      <div class="info-content" v-if="!isEdit">{{ userFormData?.city ? userFormData?.city : '未填写' }}</div>
       <div class="info-content edit" v-if="isEdit">
         <ProvinceCascader ref="provinceCascaderRef" @change="changeProvince"></ProvinceCascader>
       </div>
@@ -108,8 +120,8 @@ const submitUserInfo = () => {
     <div class="user-info-box last">
       <div class="info-title">个人介绍：</div>
       <div class="info-content" v-if="!isEdit">
-        <div class="text-info" v-if="userFormData.introduce">{{ userFormData.introduce }}</div>
-        <div class="empty-text-info" v-if="!userFormData.introduce">暂无内容</div>
+        <div class="text-info" v-if="userFormData?.introduce">{{ userFormData?.introduce }}</div>
+        <div class="empty-text-info" v-if="!userFormData?.introduce">暂无内容</div>
       </div>
       <div class="info-content edit" v-if="isEdit">
         <el-input

@@ -1,6 +1,7 @@
 <script setup>
 import PageHeader from '@/components/PageHeader.vue'
 import CheckOut from '@/views/checkout/components/CheckOut.vue'
+document.body.scrollTop = 0
 </script>
 
 <template>
